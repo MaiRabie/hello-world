@@ -4,9 +4,6 @@ jobs:
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
-        auth:
-          username: mai.rabie@valeo.com
-          password: $AWS_ACCESS_KEY_ID
     steps:
       - checkout
       - run:
