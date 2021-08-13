@@ -4,11 +4,14 @@ jobs:
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
+        auth:
+          username: mai.rabie@valeo.com
+          password: $AWS_SECRET_ACCESS_KEY
     steps:
       - checkout
       - run:
           name: Ensure backend infrastructure exist
-          command:
+          command: |
             aws cloudformation deploy --template-file template.yml --stack-name my-stack
 workflows:
   my_workflow:
