@@ -1,16 +1,41 @@
 version: 2.1
 
 jobs:
-  create_infrastructure:
+  configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["18:51:fc:17:a2:fa:63:8e:a7:6f:43:fc:33:cb:95:7c"] # You can get this ID in the section where you registered the SSH Key
       - run:
-          name: Ensure backend infrastructure exist
+          name: Install dependencies
           command: |
-            aws cloudformation deploy --template-file template.yml --stack-name my-stack
+            apk add --update ansible # install the dependencies needed for your playbook
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main.yml
+
 workflows:
   my_workflow:
     jobs:
-      - create_infrastructure
+      - configure_infrastructure
+
+#****************************************************************
+#version: 2.1
+#
+#jobs:
+#  create_infrastructure:
+#    docker:
+#      - image: amazon/aws-cli
+#    steps:
+#      - checkout
+#      - run:
+#          name: Ensure backend infrastructure exist
+#          command: |
+#            aws cloudformation deploy --template-file template.yml --stack-name my-stack
+#workflows:
+#  my_workflow:
+#    jobs:
+#      - create_infrastructure
