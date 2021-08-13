@@ -6,7 +6,7 @@ jobs:
       - image: amazon/aws-cli
         auth:
           username: mai.rabie@valeo.com
-          password: $AWS_SECRET_ACCESS_KEY
+          password: $AWS_ACCESS_KEY_ID
     steps:
       - checkout
       - run:
