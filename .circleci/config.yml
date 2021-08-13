@@ -1,26 +1,55 @@
+
 version: 2.1
 
 jobs:
-  configure_infrastructure:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints: ["18:51:fc:17:a2:fa:63:8e:a7:6f:43:fc:33:cb:95:7c"] # You can get this ID in the section where you registered the SSH Key
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible # install the dependencies needed for your playbook
-      - run:
-          name: Configure server
-          command: |
-            ansible-playbook -i inventory.txt main.yml
+  smoke_test:
+      docker:
+        - image: alpine:latest
+      steps:
+        - run: apk add --update curl
+        - run:
+            name: smoke test.
+            command: |
+              URL="https://blog.udacity.com/"
+              if curl -s --head ${URL} # test if blog.udacity. com exists
+              then
+               return 0
+              else
+               return 1
+              fi
 
 workflows:
   my_workflow:
     jobs:
-      - configure_infrastructure
+      - smoke_test:
+          requires:
+            - configure_infrastructure
+
+#**************************************************************************************
+
+#version: 2.1
+#
+#jobs:
+#  configure_infrastructure:
+#    docker:
+#      - image: python:3.7-alpine3.11
+#    steps:
+#      - checkout
+#      - add_ssh_keys:
+#          fingerprints: ["18:51:fc:17:a2:fa:63:8e:a7:6f:43:fc:33:cb:95:7c"] # You can get this ID in the section where you registered the SSH Key
+#      - run:
+#          name: Install dependencies
+#          command: |
+#            apk add --update ansible # install the dependencies needed for your playbook
+#      - run:
+#          name: Configure server
+#          command: |
+#            ansible-playbook -i inventory.txt main.yml
+#
+#workflows:
+#  my_workflow:
+#    jobs:
+#      - configure_infrastructure
 
 #****************************************************************
 #version: 2.1
